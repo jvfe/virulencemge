@@ -1,0 +1,67 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/nf-core/modules/master/subworkflows/yaml-schema.json
+name: "element_integration"
+description: Cross-reference virulence factors against prophages and genomic islands, then report
+keywords:
+  - virulence
+  - mobile genetic element
+  - colocalisation
+  - report
+components: []
+input:
+  - ch_contig_map:
+      description: |
+        Contig identifier mapping table; present for every sample, so it drives the join.
+        Structure: [ val(meta), path(tsv) ]
+  - ch_abricate:
+      description: |
+        Per-genome ABricate report.
+        Structure: [ val(meta), path(txt) ]
+  - ch_prophages:
+      description: |
+        PhiSpy prophage coordinates; empty when PhiSpy was skipped.
+        Structure: [ val(meta), path(tsv) ]
+  - ch_islands:
+      description: |
+        IslandPath-DIMOB genomic islands; empty when IslandPath-DIMOB was skipped.
+        Structure: [ val(meta), path(gff) ]
+  - ch_abricate_summary:
+      description: |
+        Multi-genome ABricate presence/absence matrix.
+        Structure: [ val(meta), path(txt) ]
+output:
+  - annotation:
+      description: |
+        Every virulence factor hit with its genomic context (PAI, prophage, both or core).
+        Structure: [ val(meta), path(tsv) ]
+  - regions:
+      description: |
+        Every predicted element with the virulence genes it contains.
+        Structure: [ val(meta), path(tsv) ]
+  - stats:
+      description: |
+        One-row per-genome count summary, consumed by the reporting step.
+        Structure: [ val(meta), path(tsv) ]
+  - regions_bed:
+      description: |
+        Prophage and genomic island tracks in BED.
+        Structure: [ val(meta), path(bed) ]
+  - regions_gff:
+      description: |
+        Prophage and genomic island tracks in GFF3.
+        Structure: [ val(meta), path(gff3) ]
+  - virulence_bed:
+      description: |
+        Virulence factor track in BED, names suffixed with the genomic context.
+        Structure: [ val(meta), path(bed) ]
+  - report:
+      description: |
+        Standalone HTML dashboard.
+        Structure: path(html)
+  - sample_summary:
+      description: |
+        Per-genome summary table concatenated across all samples.
+        Structure: path(tsv)
+authors:
+  - "@jvfe"
+maintainers:
+  - "@jvfe"

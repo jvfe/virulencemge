@@ -1,0 +1,35 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/nf-core/modules/master/subworkflows/yaml-schema.json
+name: "prepare_genomes"
+description: Build one canonical GenBank file per genome for downstream MGE prediction
+keywords:
+  - genbank
+  - gff3
+  - annotation
+  - bacteria
+components:
+  - gunzip
+input:
+  - ch_samplesheet:
+      description: |
+        Genome and annotation files as read from the samplesheet. `gff`, `gbk` and
+        `faa` may be empty lists, but at least one of `gff` or `gbk` must be present.
+        Structure: [ val(meta), path(fasta), path(gff), path(gbk), path(faa) ]
+output:
+  - fasta:
+      description: |
+        Decompressed nucleotide assembly.
+        Structure: [ val(meta), path(fasta) ]
+  - gbk:
+      description: |
+        GenBank file whose LOCUS and ACCESSION lines both derive from the assembly
+        FASTA contig identifiers, with nucleotide sequence and CDS translations present.
+        Structure: [ val(meta), path(gbk) ]
+  - contig_map:
+      description: |
+        Table mapping FASTA contig identifiers to the LOCUS and ACCESSION identifiers
+        written into the GenBank file, used to reconcile PhiSpy and IslandPath-DIMOB output.
+        Structure: [ val(meta), path(tsv) ]
+authors:
+  - "@jvfe"
+maintainers:
+  - "@jvfe"

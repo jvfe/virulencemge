@@ -1,0 +1,70 @@
+{
+    "stub": {
+        "content": [
+            {
+                "0": [
+                    "virulencemge_report.html:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "1": [
+                    "virulencemge_sample_summary.tsv:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "2": [
+                    [
+                        "virulencemge_sample_summary.tsv:md5,d41d8cd98f00b204e9800998ecf8427e",
+                        "virulencemge_vf_localisation_matrix.tsv:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "3": [
+                    [
+                        "SUMMARY_REPORT",
+                        "plotly",
+                        "5.24.1"
+                    ]
+                ],
+                "report": [
+                    "virulencemge_report.html:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "sample_summary": [
+                    "virulencemge_sample_summary.tsv:md5,d41d8cd98f00b204e9800998ecf8427e"
+                ],
+                "tables": [
+                    [
+                        "virulencemge_sample_summary.tsv:md5,d41d8cd98f00b204e9800998ecf8427e",
+                        "virulencemge_vf_localisation_matrix.tsv:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "versions_plotly": [
+                    [
+                        "SUMMARY_REPORT",
+                        "plotly",
+                        "5.24.1"
+                    ]
+                ]
+            }
+        ],
+        "timestamp": "2026-08-18T11:42:08.461114473",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.6"
+        }
+    },
+    "two genomes with an abricate summary": {
+        "content": [
+            [
+                [
+                    "virulencemge_abricate_summary.tsv:md5,4f24378be1ff3ad3776eda75d69d198d",
+                    "virulencemge_mge_regions.tsv:md5,1998af1a06d2eaa46d5c73570c0e8aa3",
+                    "virulencemge_sample_summary.tsv:md5,d4458f787f21eab1e4d706c297554a3c",
+                    "virulencemge_vf_localisation_matrix.tsv:md5,01cc2e6bf181612a59d742e7ab2f4e24",
+                    "virulencemge_vf_presence_matrix.tsv:md5,59b991e41127328f190906a1e89a1f7e",
+                    "virulencemge_virulence_annotation.tsv:md5,5b40c8319c7accb10673dc390f2129b3"
+                ]
+            ]
+        ],
+        "timestamp": "2026-08-18T11:42:00.881021196",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.6"
+        }
+    }
+}

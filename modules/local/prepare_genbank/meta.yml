@@ -1,0 +1,101 @@
+name: prepare_genbank
+description: Build a canonical GenBank file with harmonised contig identifiers from
+  a pre-annotated bacterial genome
+keywords:
+  - bacteria
+  - annotation
+  - genbank
+  - gff
+tools:
+  - biopython:
+      description: Freely available tools for computational molecular biology and bioinformatics
+      homepage: https://biopython.org
+      documentation: https://biopython.org/wiki/Documentation
+      tool_dev_url: https://github.com/biopython/biopython
+      doi: "10.1093/bioinformatics/btp163"
+      licence: ["BSD-3-clause"]
+      identifier: biotools:biopython
+input:
+  - - meta:
+        type: map
+        description: |
+          Groovy Map containing sample information
+          e.g. [ id:'test' ]
+    - fasta:
+        type: file
+        description: Nucleotide genome assembly, optionally gzipped
+        pattern: "*.{fasta,fas,fa,fna,fsa}{,.gz}"
+        ontologies:
+          - edam: "http://edamontology.org/format_1929" # FASTA
+    - gff:
+        type: file
+        description: Annotation in GFF3 format, used to build the GenBank file when
+          none is supplied. Optional, but one of gff or gbk is required.
+        pattern: "*.{gff,gff3}{,.gz}"
+        ontologies:
+          - edam: "http://edamontology.org/format_1975" # GFF3
+    - gbk:
+        type: file
+        description: Existing GenBank annotation, harmonised rather than rebuilt when
+          present. Optional, but one of gff or gbk is required.
+        pattern: "*.{gbk,gb,gbf,gbff}{,.gz}"
+        ontologies:
+          - edam: "http://edamontology.org/format_1936" # GenBank
+    - faa:
+        type: file
+        description: Optional protein FASTA supplying CDS translations
+        pattern: "*.{faa,fa,fasta}{,.gz}"
+        ontologies:
+          - edam: "http://edamontology.org/format_1929" # FASTA
+output:
+  gbk:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. [ id:'test' ]
+      - "${prefix}.gbk":
+          type: file
+          description: GenBank file carrying the nucleotide sequence, CDS features with
+            translations and LOCUS/ACCESSION identifiers taken from the assembly FASTA
+          pattern: "*.gbk"
+          ontologies:
+            - edam: "http://edamontology.org/format_1936" # GenBank
+  contig_map:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. [ id:'test' ]
+      - "${prefix}.contig_map.tsv":
+          type: file
+          description: Mapping of FASTA contig identifier to GenBank LOCUS and ACCESSION
+            identifier, with contig length and feature counts
+          pattern: "*.contig_map.tsv"
+          ontologies:
+            - edam: "http://edamontology.org/format_3475" # TSV
+  versions_biopython:
+    - - ${task.process}:
+          type: string
+          description: The process the versions were collected from
+      - biopython:
+          type: string
+          description: The tool name
+      - 'python -c "import Bio; print(Bio.__version__)"':
+          type: eval
+          description: The expression to obtain the version of the tool
+topics:
+  versions:
+    - - ${task.process}:
+          type: string
+          description: The process the versions were collected from
+      - biopython:
+          type: string
+          description: The tool name
+      - 'python -c "import Bio; print(Bio.__version__)"':
+          type: eval
+          description: The expression to obtain the version of the tool
+authors:
+  - "@jvfe"
+maintainers:
+  - "@jvfe"

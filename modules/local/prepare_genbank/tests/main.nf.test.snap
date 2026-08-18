@@ -1,0 +1,173 @@
+{
+    "genbank input": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "mini"
+                        },
+                        "mini_prepared.gbk:md5,9573de4e82228fa7bb05f21de5647cf8"
+                    ]
+                ],
+                "1": [
+                    [
+                        {
+                            "id": "mini"
+                        },
+                        "mini_prepared.contig_map.tsv:md5,88c9a263de43f2b2acbdeaaf2ecb69e8"
+                    ]
+                ],
+                "2": [
+                    [
+                        "PREPARE_GENBANK",
+                        "biopython",
+                        "1.84"
+                    ]
+                ],
+                "contig_map": [
+                    [
+                        {
+                            "id": "mini"
+                        },
+                        "mini_prepared.contig_map.tsv:md5,88c9a263de43f2b2acbdeaaf2ecb69e8"
+                    ]
+                ],
+                "gbk": [
+                    [
+                        {
+                            "id": "mini"
+                        },
+                        "mini_prepared.gbk:md5,9573de4e82228fa7bb05f21de5647cf8"
+                    ]
+                ],
+                "versions_biopython": [
+                    [
+                        "PREPARE_GENBANK",
+                        "biopython",
+                        "1.84"
+                    ]
+                ]
+            }
+        ],
+        "timestamp": "2026-08-18T11:45:02.691224571",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.6"
+        }
+    },
+    "gff input with protein fasta": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "mini"
+                        },
+                        "mini_prepared.gbk:md5,7f5dc1634c12ced200044877381c4c83"
+                    ]
+                ],
+                "1": [
+                    [
+                        {
+                            "id": "mini"
+                        },
+                        "mini_prepared.contig_map.tsv:md5,88c9a263de43f2b2acbdeaaf2ecb69e8"
+                    ]
+                ],
+                "2": [
+                    [
+                        "PREPARE_GENBANK",
+                        "biopython",
+                        "1.84"
+                    ]
+                ],
+                "contig_map": [
+                    [
+                        {
+                            "id": "mini"
+                        },
+                        "mini_prepared.contig_map.tsv:md5,88c9a263de43f2b2acbdeaaf2ecb69e8"
+                    ]
+                ],
+                "gbk": [
+                    [
+                        {
+                            "id": "mini"
+                        },
+                        "mini_prepared.gbk:md5,7f5dc1634c12ced200044877381c4c83"
+                    ]
+                ],
+                "versions_biopython": [
+                    [
+                        "PREPARE_GENBANK",
+                        "biopython",
+                        "1.84"
+                    ]
+                ]
+            }
+        ],
+        "timestamp": "2026-08-18T11:45:08.439743115",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.6"
+        }
+    },
+    "stub": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "mini"
+                        },
+                        "mini_prepared.gbk:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "1": [
+                    [
+                        {
+                            "id": "mini"
+                        },
+                        "mini_prepared.contig_map.tsv:md5,8f51defd99619e4085e11b851f46b676"
+                    ]
+                ],
+                "2": [
+                    [
+                        "PREPARE_GENBANK",
+                        "biopython",
+                        "1.84"
+                    ]
+                ],
+                "contig_map": [
+                    [
+                        {
+                            "id": "mini"
+                        },
+                        "mini_prepared.contig_map.tsv:md5,8f51defd99619e4085e11b851f46b676"
+                    ]
+                ],
+                "gbk": [
+                    [
+                        {
+                            "id": "mini"
+                        },
+                        "mini_prepared.gbk:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "versions_biopython": [
+                    [
+                        "PREPARE_GENBANK",
+                        "biopython",
+                        "1.84"
+                    ]
+                ]
+            }
+        ],
+        "timestamp": "2026-08-18T11:45:14.536082356",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.6"
+        }
+    }
+}

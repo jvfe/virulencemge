@@ -1,0 +1,44 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/nf-core/modules/master/subworkflows/yaml-schema.json
+name: "mge_prediction"
+description: Predict prophages and genomic islands from a GenBank annotation
+keywords:
+  - prophage
+  - genomic island
+  - pathogenicity island
+  - mobile genetic element
+components:
+  - phispy
+  - islandpath
+input:
+  - ch_gbk:
+      description: |
+        GenBank annotation carrying nucleotide sequence and CDS translations.
+        Structure: [ val(meta), path(gbk) ]
+  - skip_phispy:
+      type: boolean
+      description: Skip prophage prediction
+  - skip_islandpath:
+      type: boolean
+      description: Skip genomic island prediction
+output:
+  - prophages:
+      description: |
+        PhiSpy prophage coordinates. Contigs are named after the GenBank ACCESSION line.
+        Structure: [ val(meta), path(tsv) ]
+  - prophage_annotations:
+      description: |
+        PhiSpy per-gene prophage information table, when requested via `--phispy_output_choice`.
+        Structure: [ val(meta), path(tsv) ]
+  - prophage_gff:
+      description: |
+        PhiSpy prophage regions in GFF3, when requested via `--phispy_output_choice`.
+        Structure: [ val(meta), path(gff3) ]
+  - islands:
+      description: |
+        IslandPath-DIMOB genomic islands in GFF3. Contigs are named after the GenBank
+        LOCUS line, which is why the contig map is needed to cross-reference them.
+        Structure: [ val(meta), path(gff) ]
+authors:
+  - "@jvfe"
+maintainers:
+  - "@jvfe"

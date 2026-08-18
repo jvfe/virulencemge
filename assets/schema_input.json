@@ -13,21 +13,39 @@
                 "errorMessage": "Sample name must be provided and cannot contain spaces",
                 "meta": ["id"]
             },
-            "fastq_1": {
+            "fasta": {
                 "type": "string",
                 "format": "file-path",
                 "exists": true,
-                "pattern": "^([\\S\\s]*\\/)?[^\\s\\/]+\\.f(ast)?q\\.gz$",
-                "errorMessage": "FastQ file for reads 1 must be provided, cannot contain spaces and must have extension '.fq.gz' or '.fastq.gz'"
+                "pattern": "^\\S+\\.(fasta|fas|fa|fna|fsa)(\\.gz)?$",
+                "errorMessage": "Nucleotide genome assembly FASTA must be provided, cannot contain spaces and must have extension '.fasta', '.fas', '.fa', '.fna' or '.fsa' (optionally '.gz' compressed)"
             },
-            "fastq_2": {
+            "gff": {
                 "type": "string",
                 "format": "file-path",
                 "exists": true,
-                "pattern": "^([\\S\\s]*\\/)?[^\\s\\/]+\\.f(ast)?q\\.gz$",
-                "errorMessage": "FastQ file for reads 2 cannot contain spaces and must have extension '.fq.gz' or '.fastq.gz'"
+                "pattern": "^\\S+\\.(gff|gff3)(\\.gz)?$",
+                "errorMessage": "Annotation GFF cannot contain spaces and must have extension '.gff' or '.gff3' (optionally '.gz' compressed). Leave the column empty if not available."
+            },
+            "gbk": {
+                "type": "string",
+                "format": "file-path",
+                "exists": true,
+                "pattern": "^\\S+\\.(gbk|gb|gbf|gbff)(\\.gz)?$",
+                "errorMessage": "Annotation GenBank file cannot contain spaces and must have extension '.gbk', '.gb', '.gbf' or '.gbff' (optionally '.gz' compressed). Leave the column empty if not available."
+            },
+            "faa": {
+                "type": "string",
+                "format": "file-path",
+                "exists": true,
+                "pattern": "^\\S+\\.(faa|fasta|fa)(\\.gz)?$",
+                "errorMessage": "Protein FASTA cannot contain spaces and must have extension '.faa', '.fasta' or '.fa' (optionally '.gz' compressed). Leave the column empty if not available."
             }
         },
-        "required": ["sample", "fastq_1"]
+        "required": ["sample", "fasta"],
+        "anyOf": [{ "required": ["gbk"] }, { "required": ["gff"] }],
+        "errorMessage": {
+            "anyOf": "At least one of 'gbk' or 'gff' must be provided. PhiSpy and IslandPath-DIMOB both require GenBank input; when only 'gff' is given the pipeline builds a GenBank file from 'gff' + 'fasta'."
+        }
     }
 }

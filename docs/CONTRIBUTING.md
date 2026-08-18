@@ -179,4 +179,19 @@ If you update images or graphics, follow the nf-core [style guidelines](https://
 
 ## Pipeline specific contribution guidelines
 
-<!-- TODO nf-core: Add any pipeline specific contribution guidelines here, such as coding styles, procedures, checklists etc. -->
+Three processes in this pipeline are local Python scripts rather than nf-core modules: `PREPARE_GENBANK`,
+`INTEGRATE_ELEMENTS` and `SUMMARY_REPORT`. When changing one of them, please keep the following in mind.
+
+- The scripts live in `bin/` and must stay executable and runnable outside Nextflow, so that they can be debugged
+  on their own.
+- Each has an nf-test in `modules/local/<name>/tests/` that runs against the small fixtures in `tests/fixtures/`.
+  Those fixtures deliberately cover the awkward cases: a virulence factor in an island, in a prophage, in both, in
+  the core genome, one that only clips an island edge, and an element on a contig that is missing from the contig
+  map. Extend them rather than replacing them, and update the snapshots with `nf-test test --update-snapshot`.
+- Coordinates are 1-based inclusive everywhere except in BED output. If you add a parser, normalise to that
+  convention at the boundary rather than in the interval arithmetic.
+- Contig identifiers may not match between tools. Anything that reads a tool's output must pass its identifiers
+  through `ContigResolver`, otherwise overlaps are silently missed.
+- PhiSpy classifies genes with an unseeded random forest, so its output is not byte-reproducible. Content of
+  `phispy/` and of everything derived from it is excluded from the pipeline level snapshot in `tests/.nftignore`;
+  test that logic through the module level tests instead.

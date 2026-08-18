@@ -15,18 +15,54 @@ nextflow_pipeline {
         then {
             // stable_path: All files + folders in ${params.outdir}/ with a stable path (including file name)
             def stable_path = getAllFilesFromDir(params.outdir, relative: true, includeDir: true, ignore: ['pipeline_info/*.{html,json,txt}'])
-            // stable_content: All files in ${params.outdir}/ with stable content
+            // stable_content: All files in ${params.outdir}/ with stable content. PhiSpy classifies
+            // genes with an unseeded random forest, so its output and everything derived from it are
+            // excluded in tests/.nftignore; the integration and reporting logic is covered instead by
+            // the module level tests, which run on fixed inputs.
             def stable_content = getAllFilesFromDir(params.outdir, ignoreFile: 'tests/.nftignore')
             assert workflow.success
             assertAll(
                 { assert snapshot(
-                    // pipeline versions.yml file for multiqc from which Nextflow version is removed because we test pipelines on multiple Nextflow versions
-                    removeNextflowVersion("$outputDir/pipeline_info/nf_core_virulencemge_software_mqc_versions.yml"),
+                    // pipeline versions.yml file from which the Nextflow version is removed because we test pipelines on multiple Nextflow versions
+                    removeNextflowVersion("$outputDir/pipeline_info/nf_core_virulencemge_software_versions.yml"),
                     // All stable path name, with a relative path
                     stable_path,
                     // All files with stable contents
                     stable_content
-                ).match() }
+                ).match() },
+                // Both genomes must reach the report, whether their annotation came in as
+                // GenBank or as GFF3
+                { assert path("$outputDir/summary_report/virulencemge_report.html").text.contains('test_gbk') },
+                { assert path("$outputDir/summary_report/virulencemge_report.html").text.contains('test_gff') },
+                { assert path("$outputDir/summary_report/virulencemge_sample_summary.tsv").readLines().size() == 3 }
+            )
+        }
+    }
+
+    test("-profile test --skip_phispy --skip_islandpath") {
+
+        when {
+            params {
+                outdir          = "$outputDir"
+                skip_phispy     = true
+                skip_islandpath = true
+            }
+        }
+
+        then {
+            def stable_path = getAllFilesFromDir(params.outdir, relative: true, includeDir: true, ignore: ['pipeline_info/*.{html,json,txt}'])
+            def stable_content = getAllFilesFromDir(params.outdir, ignoreFile: 'tests/.nftignore')
+            assert workflow.success
+            assertAll(
+                { assert snapshot(
+                    removeNextflowVersion("$outputDir/pipeline_info/nf_core_virulencemge_software_versions.yml"),
+                    stable_path,
+                    stable_content
+                ).match() },
+                // With no elements predicted every virulence factor has to fall back to the
+                // core genome, and the report still has to be produced
+                { assert path("$outputDir/integrated_elements/test_gbk.stats.tsv").readLines()[1].contains('\t0\t0\t0\t0') },
+                { assert path("$outputDir/summary_report/virulencemge_report.html").text.contains('Co-localisation') }
             )
         }
     }

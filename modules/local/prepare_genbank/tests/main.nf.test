@@ -1,0 +1,107 @@
+nextflow_process {
+
+    name "Test process: PREPARE_GENBANK"
+    script "../main.nf"
+    process "PREPARE_GENBANK"
+
+    tag "modules"
+    tag "modules_local"
+    tag "prepare_genbank"
+
+    // The GenBank fixture has legacy LOCUS names, versioned accessions, no ORIGIN
+    // sequence and no CDS translations, i.e. everything this module has to repair.
+    test("genbank input") {
+
+        when {
+            process {
+                """
+                input[0] = [
+                    [ id:'mini' ],
+                    file("\${projectDir}/tests/fixtures/mini_genome.fasta", checkIfExists: true),
+                    [],
+                    file("\${projectDir}/tests/fixtures/mini_genome.gbk", checkIfExists: true),
+                    []
+                ]
+                """
+            }
+        }
+
+        then {
+            def gbk = path(process.out.gbk[0][1]).text
+
+            assertAll(
+                { assert process.success },
+                { assert snapshot(process.out).match() },
+                // LOCUS and ACCESSION must both come from the FASTA, so that PhiSpy and
+                // IslandPath-DIMOB report identifiers the integration step can resolve
+                { assert gbk.contains('LOCUS       contig_1') },
+                { assert gbk.contains('ACCESSION   contig_1') },
+                { assert !gbk.contains('legacy_locus') },
+                // Sequence and translations are what IslandPath-DIMOB fails without
+                { assert gbk.contains('ORIGIN') && gbk.contains('        1 ') },
+                { assert gbk.count('/translation=') == 3 }
+            )
+        }
+    }
+
+    // Prokka and Bakta append the assembly to their GFF3; the fixture holds a run of
+    // Ns there to prove the sequence is taken from the FASTA column instead.
+    test("gff input with protein fasta") {
+
+        when {
+            process {
+                """
+                input[0] = [
+                    [ id:'mini' ],
+                    file("\${projectDir}/tests/fixtures/mini_genome.fasta", checkIfExists: true),
+                    file("\${projectDir}/tests/fixtures/mini_genome.gff", checkIfExists: true),
+                    [],
+                    file("\${projectDir}/tests/fixtures/mini_genome.faa", checkIfExists: true)
+                ]
+                """
+            }
+        }
+
+        then {
+            def gbk = path(process.out.gbk[0][1]).text
+            def contig_map = path(process.out.contig_map[0][1]).readLines()
+
+            assertAll(
+                { assert process.success },
+                { assert snapshot(process.out).match() },
+                { assert !gbk.contains('nnnnnnnnnn') },
+                { assert gbk.count('/translation=') == 3 },
+                // `gene` features duplicate the CDS spans and are dropped, tRNA is kept
+                { assert gbk.contains('tRNA') },
+                { assert contig_map[1].startsWith('contig_1\tcontig_1\tcontig_1\t600\t2\t2') },
+                { assert contig_map[2].startsWith('contig_2\tcontig_2\tcontig_2\t400\t1\t2') }
+            )
+        }
+    }
+
+    test("stub") {
+
+        options "-stub"
+
+        when {
+            process {
+                """
+                input[0] = [
+                    [ id:'mini' ],
+                    file("\${projectDir}/tests/fixtures/mini_genome.fasta", checkIfExists: true),
+                    [],
+                    file("\${projectDir}/tests/fixtures/mini_genome.gbk", checkIfExists: true),
+                    []
+                ]
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(process.out).match() }
+            )
+        }
+    }
+}

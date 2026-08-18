@@ -1,0 +1,121 @@
+nextflow_process {
+
+    name "Test process: INTEGRATE_ELEMENTS"
+    script "../main.nf"
+    process "INTEGRATE_ELEMENTS"
+
+    tag "modules"
+    tag "modules_local"
+    tag "integrate_elements"
+
+    // The fixtures place one virulence factor in a genomic island, one in a prophage,
+    // one in both, one in the core genome and one that only clips the edge of an island,
+    // plus an island on a contig that is absent from the contig map.
+    test("mini fixtures - all contexts") {
+
+        when {
+            process {
+                """
+                input[0] = [
+                    [ id:'mini' ],
+                    file("\${projectDir}/tests/fixtures/mini.abricate.txt", checkIfExists: true),
+                    file("\${projectDir}/tests/fixtures/mini.phispy_coordinates.tsv", checkIfExists: true),
+                    file("\${projectDir}/tests/fixtures/mini.islandpath.gff", checkIfExists: true),
+                    file("\${projectDir}/tests/fixtures/mini.contig_map.tsv", checkIfExists: true)
+                ]
+                """
+            }
+        }
+
+        then {
+            def annotation = path(process.out.annotation[0][1]).readLines()
+            def contexts = annotation.tail().collectEntries { line ->
+                def fields = line.split('\t')
+                [("${fields[1]}:${fields[5]}".toString()): fields[12]]
+            }
+
+            assertAll(
+                { assert process.success },
+                { assert snapshot(process.out).match() },
+                // Coordinates are checked explicitly as well, so that a regression in the
+                // interval arithmetic is not silently accepted along with a new snapshot
+                { assert contexts['contig_1:vfA'] == 'PAI' },
+                { assert contexts['contig_1:vfB'] == 'Prophage' },
+                { assert contexts['contig_1:vfC'] == 'PAI+Prophage' },
+                { assert contexts['contig_1:vfD'] == 'Core genome' },
+                // vfE overlaps the island by 101 of its 1001 bp, below the 0.5 default
+                { assert contexts['contig_1:vfE'] == 'Prophage' },
+                { assert contexts['contig_2:vfA'] == 'Prophage' },
+                { assert path(process.out.stats[0][1]).text.contains('\t1\t3\t1\t1\t5\t0.8333\t1') }
+            )
+        }
+    }
+
+    test("no elements predicted") {
+
+        when {
+            process {
+                """
+                input[0] = [
+                    [ id:'mini' ],
+                    file("\${projectDir}/tests/fixtures/mini.abricate.txt", checkIfExists: true),
+                    [],
+                    [],
+                    file("\${projectDir}/tests/fixtures/mini.contig_map.tsv", checkIfExists: true)
+                ]
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(process.out).match() }
+            )
+        }
+    }
+
+    test("no virulence factors detected") {
+
+        when {
+            process {
+                """
+                input[0] = [
+                    [ id:'mini' ],
+                    [],
+                    file("\${projectDir}/tests/fixtures/mini.phispy_coordinates.tsv", checkIfExists: true),
+                    file("\${projectDir}/tests/fixtures/mini.islandpath.gff", checkIfExists: true),
+                    file("\${projectDir}/tests/fixtures/mini.contig_map.tsv", checkIfExists: true)
+                ]
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(process.out).match() }
+            )
+        }
+    }
+
+    test("stub") {
+
+        options "-stub"
+
+        when {
+            process {
+                """
+                input[0] = [ [ id:'mini' ], [], [], [], [] ]
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(process.out).match() }
+            )
+        }
+    }
+}

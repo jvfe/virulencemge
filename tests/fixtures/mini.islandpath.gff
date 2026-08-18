@@ -1,0 +1,4 @@
+##gff-version 3
+contig_1_truncated_locus	islandpath	genomic_island	1000	20000	.	-	.	ID=contig_1_gi1
+contig_1_truncated_locus	islandpath	genomic_island	39000	39500	.	+	.	ID=contig_1_gi2
+ghost_contig	islandpath	genomic_island	100	5000	.	+	.	ID=ghost_contig_gi1

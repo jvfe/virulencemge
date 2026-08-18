@@ -1,0 +1,178 @@
+{
+    "-profile test --skip_phispy --skip_islandpath": {
+        "content": [
+            {
+                "ABRICATE_RUN": {
+                    "abricate": "1.0.1"
+                },
+                "ABRICATE_SUMMARY": {
+                    "abricate": "1.0.1"
+                },
+                "GUNZIP": {
+                    "gunzip": 1.13
+                },
+                "INTEGRATE_ELEMENTS": {
+                    "pandas": "2.2.3"
+                },
+                "PREPARE_GENBANK": {
+                    "biopython": 1.84
+                },
+                "SUMMARY_REPORT": {
+                    "plotly": "5.24.1"
+                },
+                "Workflow": {
+                    "nf-core/virulencemge": "v1.0.0dev"
+                }
+            },
+            [
+                "abricate",
+                "abricate/abricate_summary.txt",
+                "abricate/test_gbk.txt",
+                "abricate/test_gff.txt",
+                "integrated_elements",
+                "integrated_elements/test_gbk.mge_regions.bed",
+                "integrated_elements/test_gbk.mge_regions.gff3",
+                "integrated_elements/test_gbk.mge_regions.tsv",
+                "integrated_elements/test_gbk.stats.tsv",
+                "integrated_elements/test_gbk.virulence_annotation.tsv",
+                "integrated_elements/test_gbk.virulence_factors.bed",
+                "integrated_elements/test_gff.mge_regions.bed",
+                "integrated_elements/test_gff.mge_regions.gff3",
+                "integrated_elements/test_gff.mge_regions.tsv",
+                "integrated_elements/test_gff.stats.tsv",
+                "integrated_elements/test_gff.virulence_annotation.tsv",
+                "integrated_elements/test_gff.virulence_factors.bed",
+                "pipeline_info",
+                "pipeline_info/nf_core_virulencemge_software_versions.yml",
+                "prepared_genomes",
+                "prepared_genomes/test_gbk_prepared.contig_map.tsv",
+                "prepared_genomes/test_gbk_prepared.gbk",
+                "prepared_genomes/test_gff_prepared.contig_map.tsv",
+                "prepared_genomes/test_gff_prepared.gbk",
+                "summary_report",
+                "summary_report/virulencemge_abricate_summary.tsv",
+                "summary_report/virulencemge_report.html",
+                "summary_report/virulencemge_sample_summary.tsv"
+            ],
+            [
+                "abricate_summary.txt:md5,6ae9529547802f45f6e04710e122dfc0",
+                "test_gbk.txt:md5,69af3321b0bc808b7ef85f102395736f",
+                "test_gff.txt:md5,69af3321b0bc808b7ef85f102395736f",
+                "test_gbk_prepared.contig_map.tsv:md5,45ff37d17856da5bab86f403d04fdf01",
+                "test_gbk_prepared.gbk:md5,219d472cfc8f784f30afbb61e4eb30d6",
+                "test_gff_prepared.contig_map.tsv:md5,72509cccb01b913d204c010551937d95",
+                "test_gff_prepared.gbk:md5,bd54308f35eb745d04cafe08797c3b8f"
+            ]
+        ],
+        "timestamp": "2026-08-18T11:50:48.872661081",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.6"
+        }
+    },
+    "-profile test": {
+        "content": [
+            {
+                "ABRICATE_RUN": {
+                    "abricate": "1.0.1"
+                },
+                "ABRICATE_SUMMARY": {
+                    "abricate": "1.0.1"
+                },
+                "GUNZIP": {
+                    "gunzip": 1.13
+                },
+                "INTEGRATE_ELEMENTS": {
+                    "pandas": "2.2.3"
+                },
+                "ISLANDPATH": {
+                    "islandpath": "1.0.6"
+                },
+                "PHISPY": {
+                    "phispy": "4.2.21"
+                },
+                "PREPARE_GENBANK": {
+                    "biopython": 1.84
+                },
+                "SUMMARY_REPORT": {
+                    "plotly": "5.24.1"
+                },
+                "Workflow": {
+                    "nf-core/virulencemge": "v1.0.0dev"
+                }
+            },
+            [
+                "abricate",
+                "abricate/abricate_summary.txt",
+                "abricate/test_gbk.txt",
+                "abricate/test_gff.txt",
+                "integrated_elements",
+                "integrated_elements/test_gbk.mge_regions.bed",
+                "integrated_elements/test_gbk.mge_regions.gff3",
+                "integrated_elements/test_gbk.mge_regions.tsv",
+                "integrated_elements/test_gbk.stats.tsv",
+                "integrated_elements/test_gbk.virulence_annotation.tsv",
+                "integrated_elements/test_gbk.virulence_factors.bed",
+                "integrated_elements/test_gff.mge_regions.bed",
+                "integrated_elements/test_gff.mge_regions.gff3",
+                "integrated_elements/test_gff.mge_regions.tsv",
+                "integrated_elements/test_gff.stats.tsv",
+                "integrated_elements/test_gff.virulence_annotation.tsv",
+                "integrated_elements/test_gff.virulence_factors.bed",
+                "islandpath",
+                "islandpath/logs",
+                "islandpath/logs/test_gbk_Dimob.log",
+                "islandpath/logs/test_gff_Dimob.log",
+                "islandpath/test_gbk.gff",
+                "islandpath/test_gff.gff",
+                "phispy",
+                "phispy/test_gbk.gbk",
+                "phispy/test_gbk.log",
+                "phispy/test_gbk.tsv",
+                "phispy/test_gbk_bacteria.gbk",
+                "phispy/test_gbk_phage.gbk",
+                "phispy/test_gbk_prophage.gff3",
+                "phispy/test_gbk_prophage.tbl",
+                "phispy/test_gbk_prophage.tsv",
+                "phispy/test_gbk_prophage_information.tsv",
+                "phispy/test_gff.gbk",
+                "phispy/test_gff.log",
+                "phispy/test_gff.tsv",
+                "phispy/test_gff_bacteria.gbk",
+                "phispy/test_gff_phage.gbk",
+                "phispy/test_gff_prophage.gff3",
+                "phispy/test_gff_prophage.tbl",
+                "phispy/test_gff_prophage.tsv",
+                "phispy/test_gff_prophage_information.tsv",
+                "pipeline_info",
+                "pipeline_info/nf_core_virulencemge_software_versions.yml",
+                "prepared_genomes",
+                "prepared_genomes/test_gbk_prepared.contig_map.tsv",
+                "prepared_genomes/test_gbk_prepared.gbk",
+                "prepared_genomes/test_gff_prepared.contig_map.tsv",
+                "prepared_genomes/test_gff_prepared.gbk",
+                "summary_report",
+                "summary_report/virulencemge_abricate_summary.tsv",
+                "summary_report/virulencemge_mge_regions.tsv",
+                "summary_report/virulencemge_report.html",
+                "summary_report/virulencemge_sample_summary.tsv"
+            ],
+            [
+                "abricate_summary.txt:md5,6ae9529547802f45f6e04710e122dfc0",
+                "test_gbk.txt:md5,69af3321b0bc808b7ef85f102395736f",
+                "test_gff.txt:md5,69af3321b0bc808b7ef85f102395736f",
+                "test_gbk.gff:md5,d4719f73e9af606346fade238aa191fa",
+                "test_gff.gff:md5,e6fc618f60d7ea1f0a02a11e6831a657",
+                "test_gbk_prepared.contig_map.tsv:md5,45ff37d17856da5bab86f403d04fdf01",
+                "test_gbk_prepared.gbk:md5,219d472cfc8f784f30afbb61e4eb30d6",
+                "test_gff_prepared.contig_map.tsv:md5,72509cccb01b913d204c010551937d95",
+                "test_gff_prepared.gbk:md5,bd54308f35eb745d04cafe08797c3b8f"
+            ]
+        ],
+        "timestamp": "2026-08-18T11:52:55.911991728",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.6"
+        }
+    }
+}

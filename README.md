@@ -21,46 +21,58 @@
 
 ## Introduction
 
-**nf-core/virulencemge** is a bioinformatics pipeline that ...
+**nf-core/virulencemge** takes bacterial genomes that have already been annotated with
+[Prokka](https://github.com/tseemann/prokka) or [Bakta](https://github.com/oschwengers/bakta) and works out
+which of their virulence factors sit inside mobile genetic elements. It screens the assemblies against
+[VFDB](http://www.mgc.ac.cn/VFs/) with [ABricate](https://github.com/tseemann/abricate), predicts integrated
+prophages with [PhiSpy](https://github.com/linsalrob/PhiSpy) and genomic (pathogenicity) islands with
+[IslandPath-DIMOB](https://github.com/brinkmanlab/islandpath), then intersects the three sets of coordinates.
+The output is a per-genome table stating, for every virulence gene, whether it lies in a pathogenicity island,
+a prophage, both, or the core genome, alongside BED/GFF3 tracks and a standalone HTML dashboard.
 
-<!-- TODO nf-core:
-   Complete this sentence with a 2-3 sentence summary of what types of data the pipeline ingests, a brief overview of the
-   major pipeline sections and the types of output it produces. You're giving an overview to someone new
-   to nf-core here, in 15-20 seconds. For an example, see https://github.com/nf-core/rnaseq/blob/master/README.md#introduction
--->
+1. Harmonise the annotation into a single GenBank file per genome, rebuilding it from GFF3 + FASTA when no
+   GenBank file was supplied (`prepare_genbank.py`)
+2. Mine virulence factors ([`ABricate`](https://github.com/tseemann/abricate), VFDB) and aggregate them into a
+   presence/absence matrix (`abricate --summary`)
+3. Identify prophages ([`PhiSpy`](https://github.com/linsalrob/PhiSpy))
+4. Identify genomic / pathogenicity islands ([`IslandPath-DIMOB`](https://github.com/brinkmanlab/islandpath))
+5. Cross-reference the coordinates of all three and classify each virulence factor's genomic context
+   (`integrate_elements.py`)
+6. Render summary matrices and a self-contained HTML report (`summarise_virulence_mge.py`)
 
-<!-- TODO nf-core: Include a figure that guides the user through the major workflow steps. Many nf-core
-     workflows use the "tube map" design for that. See https://nf-co.re/docs/community/brand/workflow-schematics#examples for examples.   -->
-<!-- TODO nf-core: Fill in short bullet-pointed list of the default steps in the pipeline -->
+### Why the annotation is rebuilt
+
+PhiSpy and IslandPath-DIMOB both read GenBank, but they report contig identifiers differently: PhiSpy uses the
+`ACCESSION` line while IslandPath-DIMOB uses the `LOCUS` line, and either can differ from the FASTA header that
+ABricate reports. Intersecting their coordinates naively silently produces zero overlaps. The pipeline therefore
+rewrites the GenBank file so all three identifiers derive from the assembly FASTA, and emits a mapping table that
+the integration step uses to reconcile whatever the tools report.
 
 ## Usage
 
 > [!NOTE]
 > If you are new to Nextflow and nf-core, please refer to [this page](https://nf-co.re/docs/get_started/environment_setup/overview) on how to set-up Nextflow. Make sure to [test your setup](https://nf-co.re/docs/get_started/run-your-first-pipeline) with `-profile test` before running the workflow on actual data.
 
-<!-- TODO nf-core: Describe the minimum required steps to execute the pipeline, e.g. how to prepare samplesheets.
-     Explain what rows and columns represent. For instance (please edit as appropriate):
-
-First, prepare a samplesheet with your input data that looks as follows:
+First, prepare a samplesheet describing your pre-annotated genomes:
 
 `samplesheet.csv`:
 
 ```csv
-sample,fastq_1,fastq_2
-CONTROL_REP1,AEG588A1_S1_L002_R1_001.fastq.gz,AEG588A1_S1_L002_R2_001.fastq.gz
+sample,fasta,gff,gbk,faa
+MT1012,/data/MT1012.fna,/data/MT1012.gff,/data/MT1012.gbk,/data/MT1012.faa
+MT1013,/data/MT1013.fna,/data/MT1013.gff3,/data/MT1013.gbff,
+MT1014,/data/MT1014.fna.gz,/data/MT1014.gff3.gz,,
 ```
 
-Each row represents a fastq file (single-end) or a pair of fastq files (paired end).
-
--->
+`sample` and `fasta` are required. `gff`, `gbk` and `faa` are optional columns that may be left empty, but each
+row needs at least one of `gbk` or `gff`: when `gbk` is missing the pipeline builds one from `gff` + `fasta`, and
+uses `faa` for the CDS translations if it is available. Any file may be gzip-compressed.
 
 Now, you can run the pipeline using:
 
-<!-- TODO nf-core: update the following command to include all required parameters for a minimal example -->
-
 ```bash
 nextflow run nf-core/virulencemge \
-   -profile <docker/singularity/.../institute> \
+   -profile <docker/singularity/conda> \
    --input samplesheet.csv \
    --outdir <OUTDIR>
 ```
@@ -80,10 +92,6 @@ For more details about the output files and reports, please refer to the
 
 nf-core/virulencemge was originally written by jvfe.
 
-We thank the following people for their extensive assistance in the development of this pipeline:
-
-<!-- TODO nf-core: If applicable, make list of people who have also contributed -->
-
 ## Contributions and Support
 
 If you would like to contribute to this pipeline, please see the [contributing guidelines](docs/CONTRIBUTING.md).
@@ -92,10 +100,8 @@ For further information or help, don't hesitate to get in touch on the [Slack `#
 
 ## Citations
 
-<!-- TODO nf-core: Add citation for pipeline after first release. Uncomment lines below and update Zenodo doi and badge at the top of this file. -->
-<!-- If you use nf-core/virulencemge for your analysis, please cite it using the following doi: [10.5281/zenodo.XXXXXX](https://doi.org/10.5281/zenodo.XXXXXX) -->
-
-<!-- TODO nf-core: Add bibliography of tools and data used in your pipeline -->
+If you use nf-core/virulencemge for your analysis, please cite the pipeline release you used together with
+the tools listed in [`CITATIONS.md`](CITATIONS.md).
 
 An extensive list of references for the tools used by the pipeline can be found in the [`CITATIONS.md`](CITATIONS.md) file.
 

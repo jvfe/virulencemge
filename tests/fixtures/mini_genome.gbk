@@ -1,0 +1,41 @@
+LOCUS       contig_1_legacy_locus   600 bp    DNA     linear   BCT 01-JAN-2020
+DEFINITION  mini test chromosome.
+ACCESSION   contig_1
+VERSION     contig_1.1
+KEYWORDS    .
+SOURCE      Mini bacterium
+  ORGANISM  Mini bacterium
+            Bacteria.
+FEATURES             Location/Qualifiers
+     source          1..600
+                     /organism="Mini bacterium"
+                     /mol_type="genomic DNA"
+     CDS             1..300
+                     /locus_tag="MINI_00001"
+                     /product="hypothetical protein"
+     CDS             complement(301..600)
+                     /gene="vfA"
+                     /locus_tag="MINI_00002"
+                     /product="putative adhesin"
+ORIGIN
+//
+LOCUS       contig_2_legacy_locus   400 bp    DNA     linear   BCT 01-JAN-2020
+DEFINITION  mini test plasmid.
+ACCESSION   contig_2
+VERSION     contig_2.1
+KEYWORDS    .
+SOURCE      Mini bacterium
+  ORGANISM  Mini bacterium
+            Bacteria.
+FEATURES             Location/Qualifiers
+     source          1..400
+                     /organism="Mini bacterium"
+                     /mol_type="genomic DNA"
+     CDS             1..300
+                     /locus_tag="MINI_00003"
+                     /product="mobilisation protein"
+     tRNA            377..400
+                     /locus_tag="MINI_00004"
+                     /product="tRNA-Ala(tgc)"
+ORIGIN
+//

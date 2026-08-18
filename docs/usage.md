@@ -6,51 +6,87 @@
 
 ## Introduction
 
-<!-- TODO nf-core: Add documentation about anything specific to running your pipeline. For general topics, please point to (and add to) the main nf-core website. -->
+nf-core/virulencemge annotates virulence factors, prophages and genomic (pathogenicity) islands in bacterial
+genomes that have **already been annotated**, typically with Prokka or Bakta, and then reports which virulence
+factors sit inside mobile genetic elements. It does not perform assembly or gene calling.
 
 ## Samplesheet input
 
-You will need to create a samplesheet with information about the samples you would like to analyse before running the pipeline. Use this parameter to specify its location. It has to be a comma-separated file with 3 columns, and a header row as shown in the examples below.
+You will need to create a samplesheet describing your annotated genomes and pass it with `--input`. It is a
+comma-separated file with a header row and the five columns below.
 
 ```bash
 --input '[path to samplesheet file]'
 ```
 
-### Multiple runs of the same sample
-
-The `sample` identifiers have to be the same when you have re-sequenced the same sample more than once e.g. to increase sequencing depth. The pipeline will concatenate the raw reads before performing any downstream analysis. Below is an example for the same sample sequenced across 3 lanes:
-
 ```csv title="samplesheet.csv"
-sample,fastq_1,fastq_2
-CONTROL_REP1,AEG588A1_S1_L002_R1_001.fastq.gz,AEG588A1_S1_L002_R2_001.fastq.gz
-CONTROL_REP1,AEG588A1_S1_L003_R1_001.fastq.gz,AEG588A1_S1_L003_R2_001.fastq.gz
-CONTROL_REP1,AEG588A1_S1_L004_R1_001.fastq.gz,AEG588A1_S1_L004_R2_001.fastq.gz
+sample,fasta,gff,gbk,faa
+MT1012,/data/MT1012.fna,/data/MT1012.gff,/data/MT1012.gbk,/data/MT1012.faa
+MT1013,/data/MT1013.fna,/data/MT1013.gff3,/data/MT1013.gbff,
+MT1014,/data/MT1014.fna.gz,/data/MT1014.gff3.gz,,
 ```
 
-### Full samplesheet
+| Column   | Description                                                                                                                                                                                                        |
+| -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `sample` | Custom genome identifier. Must be unique and cannot contain spaces; it is used to name every output file.                                                                                                          |
+| `fasta`  | **Required.** Nucleotide assembly FASTA (`.fasta`, `.fas`, `.fa`, `.fna`, `.fsa`, optionally `.gz`). This is what ABricate is screened against, and its headers define the contig identifiers used in all outputs. |
+| `gff`    | Optional. Annotation GFF3 (`.gff`, `.gff3`, optionally `.gz`), as written by Prokka or Bakta. Used to build a GenBank file when `gbk` is absent.                                                                   |
+| `gbk`    | Optional. Annotation GenBank file (`.gbk`, `.gb`, `.gbf`, `.gbff`, optionally `.gz`).                                                                                                                              |
+| `faa`    | Optional. Protein FASTA (`.faa`, `.fa`, `.fasta`, optionally `.gz`). Supplies CDS translations when building a GenBank file from GFF3.                                                                             |
 
-The pipeline will auto-detect whether a sample is single- or paired-end using the information provided in the samplesheet. The samplesheet can have as many columns as you desire, however, there is a strict requirement for the first 3 columns to match those defined in the table below.
+### Optional columns
 
-A final samplesheet file consisting of both single- and paired-end data may look something like the one below. This is for 6 samples, where `TREATMENT_REP3` has been sequenced twice.
+Only `sample` and `fasta` are mandatory, but **every row needs at least one of `gbk` or `gff`**, because PhiSpy and
+IslandPath-DIMOB can only read GenBank. Rows are validated individually, so a run can freely mix genomes that have
+a GenBank file with genomes that only have a GFF3.
 
-```csv title="samplesheet.csv"
-sample,fastq_1,fastq_2
-CONTROL_REP1,AEG588A1_S1_L002_R1_001.fastq.gz,AEG588A1_S1_L002_R2_001.fastq.gz
-CONTROL_REP2,AEG588A2_S2_L002_R1_001.fastq.gz,AEG588A2_S2_L002_R2_001.fastq.gz
-CONTROL_REP3,AEG588A3_S3_L002_R1_001.fastq.gz,AEG588A3_S3_L002_R2_001.fastq.gz
-TREATMENT_REP1,AEG588A4_S4_L003_R1_001.fastq.gz,
-TREATMENT_REP2,AEG588A5_S5_L003_R1_001.fastq.gz,
-TREATMENT_REP3,AEG588A6_S6_L003_R1_001.fastq.gz,
-TREATMENT_REP3,AEG588A6_S6_L004_R1_001.fastq.gz,
+- **`gbk` given** (recommended): it is used directly, after being rewritten so its contig identifiers match the FASTA.
+- **`gbk` empty, `gff` given**: a GenBank file is built from `gff` + `fasta`. CDS translations are taken from `faa`
+  when present and otherwise generated with translation table 11. Prokka and Bakta both append the assembly to
+  their GFF3 under a `##FASTA` header; that section is ignored in favour of the `fasta` column.
+- **`faa` empty**: harmless, translations are computed as described above.
+
+Leaving a column empty means an empty field in the CSV (`,,`), not the string `NA`. An
+[example samplesheet](../assets/samplesheet.csv) is provided with the pipeline.
+
+### Annotation requirements
+
+The GenBank file handed to PhiSpy and IslandPath-DIMOB must contain CDS features **and** the nucleotide sequence;
+IslandPath-DIMOB aborts otherwise. The pipeline guarantees this by injecting the sequence from the `fasta` column
+and filling in any missing `/translation` qualifiers, so annotations that would fail if passed to the tools
+directly will usually work here. What it cannot fix is a genome with no CDS features at all, which fails with an
+explicit error.
+
+## Selecting a database
+
+Virulence factors are screened with ABricate against VFDB by default. Any database bundled with the ABricate
+container can be selected instead:
+
+```bash
+--abricate_db card
 ```
 
-| Column    | Description                                                                                                                                                                            |
-| --------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `sample`  | Custom sample name. This entry will be identical for multiple sequencing libraries/runs from the same sample. Spaces in sample names are automatically converted to underscores (`_`). |
-| `fastq_1` | Full path to FastQ file for Illumina short reads 1. File has to be gzipped and have the extension ".fastq.gz" or ".fq.gz".                                                             |
-| `fastq_2` | Full path to FastQ file for Illumina short reads 2. File has to be gzipped and have the extension ".fastq.gz" or ".fq.gz".                                                             |
+To use a locally built or more recent copy of VFDB, point `--abricate_datadir` at your ABricate database directory.
+Hit stringency is controlled with `--abricate_minid` and `--abricate_mincov`.
 
-An [example samplesheet](../assets/samplesheet.csv) has been provided with the pipeline.
+## Tuning the co-localisation call
+
+A virulence factor is reported as residing in an element when at least `--mge_min_overlap` of the gene (default
+`0.5`) falls inside the predicted prophage or genomic island. Use a small value to call any overlap at all, or `1`
+to require the gene to be fully contained:
+
+```bash
+--mge_min_overlap 0.99
+```
+
+The per-genome `*.virulence_annotation.tsv` always reports the raw overlap in base pairs and as a fraction, so the
+threshold can be revisited without re-running the tools.
+
+## Skipping steps
+
+`--skip_phispy` and `--skip_islandpath` turn off prophage and genomic island prediction respectively. The
+integration and reporting steps still run, and virulence factors are simply reported against whichever elements
+remain.
 
 ## Running the pipeline
 

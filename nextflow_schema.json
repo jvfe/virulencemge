@@ -19,8 +19,8 @@
                     "schema": "assets/schema_input.json",
                     "mimetype": "text/csv",
                     "pattern": "^\\S+\\.csv$",
-                    "description": "Path to comma-separated file containing information about the samples in the experiment.",
-                    "help_text": "You will need to create a design file with information about the samples in your experiment before running the pipeline. Use this parameter to specify its location. It has to be a comma-separated file with 3 columns, and a header row. See [usage docs](https://nf-co.re/virulencemge/usage#samplesheet-input).",
+                    "description": "Path to comma-separated file containing information about the pre-annotated genomes to analyse.",
+                    "help_text": "The samplesheet has the columns `sample,fasta,gff,gbk,faa`. `sample` and `fasta` are mandatory; `gff`, `gbk` and `faa` may be left empty, but at least one of `gbk` or `gff` must be given per row because PhiSpy and IslandPath-DIMOB both require GenBank input. See [usage docs](https://nf-co.re/virulencemge/usage#samplesheet-input).",
                     "fa_icon": "fas fa-file-csv"
                 },
                 "outdir": {
@@ -35,6 +35,108 @@
                     "fa_icon": "fas fa-envelope",
                     "help_text": "Set this parameter to your e-mail address to get a summary e-mail with details of the run sent to you when the workflow exits. If set in your user config file (`~/.nextflow/config`) then you don't need to specify this on the command line for every run.",
                     "pattern": "^([a-zA-Z0-9_\\-\\.]+)@([a-zA-Z0-9_\\-\\.]+)\\.([a-zA-Z]{2,5})$"
+                }
+            }
+        },
+        "virulence_factor_mining": {
+            "title": "Virulence factor mining",
+            "type": "object",
+            "fa_icon": "fas fa-bacterium",
+            "description": "Options for screening assemblies with ABricate.",
+            "properties": {
+                "abricate_db": {
+                    "type": "string",
+                    "default": "vfdb",
+                    "description": "ABricate database to screen against.",
+                    "help_text": "Defaults to the Virulence Factor Database (VFDB). Any database bundled with the ABricate container (`vfdb`, `card`, `resfinder`, `plasmidfinder`, `ecoh`, `ecoli_vf`, `megares`, `argannot`, `ncbi`) can be used, as can a custom database supplied via `--abricate_datadir`.",
+                    "fa_icon": "fas fa-database"
+                },
+                "abricate_datadir": {
+                    "type": "string",
+                    "format": "directory-path",
+                    "exists": true,
+                    "description": "Directory holding a custom set of ABricate databases.",
+                    "help_text": "Passed to ABricate as `--datadir`. Use this to screen against a locally built or newer copy of VFDB instead of the one bundled in the container.",
+                    "fa_icon": "fas fa-folder-open"
+                },
+                "abricate_minid": {
+                    "type": "integer",
+                    "default": 80,
+                    "minimum": 0,
+                    "maximum": 100,
+                    "description": "Minimum DNA identity (%) for an ABricate hit to be reported.",
+                    "fa_icon": "fas fa-percent"
+                },
+                "abricate_mincov": {
+                    "type": "integer",
+                    "default": 60,
+                    "minimum": 0,
+                    "maximum": 100,
+                    "description": "Minimum DNA coverage (%) for an ABricate hit to be reported.",
+                    "fa_icon": "fas fa-percent"
+                }
+            }
+        },
+        "mobile_genetic_element_prediction": {
+            "title": "Mobile genetic element prediction",
+            "type": "object",
+            "fa_icon": "fas fa-viruses",
+            "description": "Options for prophage and genomic island prediction.",
+            "properties": {
+                "skip_phispy": {
+                    "type": "boolean",
+                    "description": "Skip prophage identification with PhiSpy.",
+                    "fa_icon": "fas fa-forward"
+                },
+                "phispy_training_set": {
+                    "type": "string",
+                    "description": "Name of the PhiSpy training set to use instead of the generic bacterial model.",
+                    "help_text": "PhiSpy ships training sets for a number of species; using a close relative of the query genome improves prophage boundary calls. Run `PhiSpy.py --list` inside the container to see the available names.",
+                    "fa_icon": "fas fa-graduation-cap"
+                },
+                "phispy_phage_genes": {
+                    "type": "integer",
+                    "default": 1,
+                    "minimum": 0,
+                    "description": "Minimum number of phage-like genes a region must contain to be called a prophage.",
+                    "help_text": "Raising this value makes prophage calls more conservative. Setting it to `0` makes PhiSpy report other mobile elements (plasmids, integrons, islands) as well, which will inflate the overlap with IslandPath-DIMOB predictions.",
+                    "fa_icon": "fas fa-dna"
+                },
+                "phispy_output_choice": {
+                    "type": "integer",
+                    "default": 512,
+                    "description": "Bitmask selecting which PhiSpy output files to produce.",
+                    "help_text": "Sum of the codes documented by PhiSpy (1 = prophage coordinates, 2 = GenBank, 4 = prophage/bacterial sequences, 8 = prophage information, 16 = prophage table, 32 = prophage GFF3, 64 = prophage .tbl, 128 = random forest data, 256 = annotated genome GFF3). Use `512` for everything. The coordinate file needed for cross-referencing is always produced.",
+                    "fa_icon": "fas fa-list-ol"
+                },
+                "skip_islandpath": {
+                    "type": "boolean",
+                    "description": "Skip genomic island identification with IslandPath-DIMOB.",
+                    "fa_icon": "fas fa-forward"
+                }
+            }
+        },
+        "integration_and_reporting": {
+            "title": "Integration and reporting",
+            "type": "object",
+            "fa_icon": "fas fa-project-diagram",
+            "description": "Options for cross-referencing coordinates and building the summary report.",
+            "properties": {
+                "mge_min_overlap": {
+                    "type": "number",
+                    "default": 0.5,
+                    "minimum": 0,
+                    "maximum": 1,
+                    "description": "Fraction of a virulence gene that must lie inside an element for it to count as contained.",
+                    "help_text": "Set to a small value (for example `0.01`) to call any overlap, or to `1` to require the gene to be fully contained within the predicted prophage or genomic island.",
+                    "fa_icon": "fas fa-arrows-alt-h"
+                },
+                "report_top_genes": {
+                    "type": "integer",
+                    "default": 30,
+                    "minimum": 1,
+                    "description": "Number of most frequent virulence genes shown in the report heatmap and bar chart.",
+                    "fa_icon": "fas fa-sort-amount-down"
                 }
             }
         },
@@ -166,6 +268,15 @@
     "allOf": [
         {
             "$ref": "#/$defs/input_output_options"
+        },
+        {
+            "$ref": "#/$defs/virulence_factor_mining"
+        },
+        {
+            "$ref": "#/$defs/mobile_genetic_element_prediction"
+        },
+        {
+            "$ref": "#/$defs/integration_and_reporting"
         },
         {
             "$ref": "#/$defs/institutional_config_options"

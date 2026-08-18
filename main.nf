@@ -15,7 +15,7 @@
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
-include { VIRULENCEMGE  } from './workflows/virulencemge'
+include { VIRULENCE_MGE           } from './workflows/virulence_mge'
 include { PIPELINE_INITIALISATION } from './subworkflows/local/utils_nfcore_virulencemge_pipeline'
 include { PIPELINE_COMPLETION     } from './subworkflows/local/utils_nfcore_virulencemge_pipeline'
 /*
@@ -37,7 +37,7 @@ workflow NFCORE_VIRULENCEMGE {
     //
     // WORKFLOW: Run pipeline
     //
-    VIRULENCEMGE (
+    VIRULENCE_MGE (
         samplesheet,
         params.outdir,
     )

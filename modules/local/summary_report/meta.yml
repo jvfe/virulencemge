@@ -1,0 +1,99 @@
+name: summary_report
+description: Aggregate per-genome virulence and mobile element tables into multi-genome
+  matrices and a standalone HTML dashboard
+keywords:
+  - report
+  - visualisation
+  - virulence
+  - mobile genetic element
+tools:
+  - plotly:
+      description: Interactive graphing library for Python
+      homepage: https://plotly.com/python/
+      documentation: https://plotly.com/python/
+      tool_dev_url: https://github.com/plotly/plotly.py
+      licence: ["MIT"]
+      identifier: ""
+  - pandas:
+      description: Fast, powerful, flexible and easy to use data analysis and manipulation
+        tool for Python
+      homepage: https://pandas.pydata.org
+      documentation: https://pandas.pydata.org/docs
+      tool_dev_url: https://github.com/pandas-dev/pandas
+      doi: "10.5281/zenodo.3509134"
+      licence: ["BSD-3-clause"]
+      identifier: ""
+input:
+  - stats:
+      type: file
+      description: Per-genome count summaries from INTEGRATE_ELEMENTS
+      pattern: "*.stats.tsv"
+      ontologies:
+        - edam: "http://edamontology.org/format_3475" # TSV
+  - annotations:
+      type: file
+      description: Per-genome virulence factor annotation tables from INTEGRATE_ELEMENTS
+      pattern: "*.virulence_annotation.tsv"
+      ontologies:
+        - edam: "http://edamontology.org/format_3475" # TSV
+  - regions:
+      type: file
+      description: Per-genome mobile element region tables from INTEGRATE_ELEMENTS
+      pattern: "*.mge_regions.tsv"
+      ontologies:
+        - edam: "http://edamontology.org/format_3475" # TSV
+  - abricate_summary:
+      type: file
+      description: Optional presence/absence matrix from `abricate --summary`
+      pattern: "*.txt"
+      ontologies:
+        - edam: "http://edamontology.org/format_3475" # TSV
+output:
+  report:
+    - "${prefix}_report.html":
+        type: file
+        description: Self-contained HTML dashboard with summary tables, co-localisation
+          frequency plots and a gene by genome localisation heatmap
+        pattern: "*_report.html"
+        ontologies:
+          - edam: "http://edamontology.org/format_2331" # HTML
+  sample_summary:
+    - "${prefix}_sample_summary.tsv":
+        type: file
+        description: Per-genome counts concatenated across all samples
+        pattern: "*_sample_summary.tsv"
+        ontologies:
+          - edam: "http://edamontology.org/format_3475" # TSV
+  tables:
+    - "${prefix}_*.tsv":
+        type: file
+        description: Aggregated tables, including the virulence factor localisation and
+          presence matrices and the concatenated per-genome tables
+        pattern: "*.tsv"
+        ontologies:
+          - edam: "http://edamontology.org/format_3475" # TSV
+  versions_plotly:
+    - - ${task.process}:
+          type: string
+          description: The process the versions were collected from
+      - plotly:
+          type: string
+          description: The tool name
+      - 'python -c "import plotly; print(plotly.__version__)"':
+          type: eval
+          description: The expression to obtain the version of the tool
+topics:
+  versions:
+    - - ${task.process}:
+          type: string
+          description: The process the versions were collected from
+      - plotly:
+          type: string
+          description: The tool name
+      - 'python -c "import plotly; print(plotly.__version__)"':
+          type: eval
+          description: The expression to obtain the version of the tool
+authors:
+  - "@jvfe"
+maintainers:
+  - "@jvfe"

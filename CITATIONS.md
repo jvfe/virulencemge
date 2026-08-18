@@ -10,9 +10,46 @@
 
 ## Pipeline tools
 
+- [ABricate](https://github.com/tseemann/abricate)
 
+  > Seemann T. ABricate: mass screening of contigs for antimicrobial and virulence genes. GitHub https://github.com/tseemann/abricate
 
+- [VFDB](https://pubmed.ncbi.nlm.nih.gov/30395255/)
 
+  > Liu B, Zheng D, Jin Q, Chen L, Yang J. VFDB 2019: a comparative pathogenomic platform with an interactive web interface. Nucleic Acids Res. 2019 Jan 8;47(D1):D687-D692. doi: 10.1093/nar/gky1080. PubMed PMID: 30395255; PubMed Central PMCID: PMC6324032.
+
+- [PhiSpy](https://pubmed.ncbi.nlm.nih.gov/22584627/)
+
+  > Akhter S, Aziz RK, Edwards RA. PhiSpy: a novel algorithm for finding prophages in bacterial genomes that combines similarity- and composition-based strategies. Nucleic Acids Res. 2012 Sep;40(16):e126. doi: 10.1093/nar/gks406. PubMed PMID: 22584627; PubMed Central PMCID: PMC3439882.
+
+- [IslandPath-DIMOB](https://pubmed.ncbi.nlm.nih.gov/28535296/)
+
+  > Bertelli C, Brinkman FSL. Improved genomic island predictions with IslandPath-DIMOB. Bioinformatics. 2018 Jul 1;34(13):2161-2167. doi: 10.1093/bioinformatics/bty095. PubMed PMID: 29905770; PubMed Central PMCID: PMC6022643.
+
+- [Biopython](https://pubmed.ncbi.nlm.nih.gov/19304878/)
+
+  > Cock PJ, Antao T, Chang JT, Chapman BA, Cox CJ, Dalke A, Friedberg I, Hamelryck T, Kauff F, Wilczynski B, de Hoon MJ. Biopython: freely available Python tools for computational molecular biology and bioinformatics. Bioinformatics. 2009 Jun 1;25(11):1422-3. doi: 10.1093/bioinformatics/btp163. PubMed PMID: 19304878; PubMed Central PMCID: PMC2682512.
+
+- [pandas](https://doi.org/10.5281/zenodo.3509134)
+
+  > The pandas development team. pandas-dev/pandas: Pandas. Zenodo. doi: 10.5281/zenodo.3509134.
+
+- [Plotly](https://plotly.com/python/)
+
+  > Plotly Technologies Inc. Collaborative data science. Montréal, QC, 2015. https://plot.ly
+
+## Reference annotation tools
+
+The pipeline consumes the output of these tools rather than running them, but analyses depending on their
+annotation should cite them.
+
+- [Prokka](https://pubmed.ncbi.nlm.nih.gov/24642063/)
+
+  > Seemann T. Prokka: rapid prokaryotic genome annotation. Bioinformatics. 2014 Jul 15;30(14):2068-9. doi: 10.1093/bioinformatics/btu153. PubMed PMID: 24642063.
+
+- [Bakta](https://pubmed.ncbi.nlm.nih.gov/34739369/)
+
+  > Schwengers O, Jelonek L, Dieckmann MA, Beyvers S, Blom J, Goesmann A. Bakta: rapid and standardized annotation of bacterial genomes via alignment-free sequence identification. Microb Genom. 2021 Nov;7(11):000685. doi: 10.1099/mgen.0.000685. PubMed PMID: 34739369; PubMed Central PMCID: PMC8743544.
 
 ## Software packaging/containerisation tools
 

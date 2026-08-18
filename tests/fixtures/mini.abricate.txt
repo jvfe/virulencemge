@@ -1,0 +1,7 @@
+#FILE	SEQUENCE	START	END	STRAND	GENE	COVERAGE	COVERAGE_MAP	GAPS	%COVERAGE	%IDENTITY	DATABASE	ACCESSION	PRODUCT	RESISTANCE
+mini.fasta	contig_1	2000	3000	+	vfA	1-1001/1001	===============	0/0	100.00	99.50	vfdb	VF000001	putative adhesin	
+mini.fasta	contig_1	25000	26000	-	vfB	1-1001/1001	===============	0/0	100.00	98.10	vfdb	VF000002	phage-borne toxin	
+mini.fasta	contig_1	16000	17000	+	vfC	1-1001/1001	===============	0/0	100.00	97.80	vfdb	VF000003	type III secretion effector	
+mini.fasta	contig_1	40000	41000	+	vfD	1-1001/1001	===============	0/0	100.00	99.90	vfdb	VF000004	core capsule biosynthesis gene	
+mini.fasta	contig_1	19900	20900	+	vfE	1-1001/1001	===============	0/0	100.00	96.40	vfdb	VF000005	island-flanking siderophore gene	
+mini.fasta	contig_2	5000	6000	+	vfA	1-1001/1001	===============	0/0	100.00	99.10	vfdb	VF000001	putative adhesin	

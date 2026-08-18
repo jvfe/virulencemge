@@ -5,13 +5,38 @@
         "https://github.com/nf-core/modules.git": {
             "modules": {
                 "nf-core": {
+                    "abricate/run": {
+                        "branch": "master",
+                        "git_sha": "6d46786420b4d7bc88eba026eb389c0c5535d120",
+                        "installed_by": ["modules"]
+                    },
+                    "abricate/summary": {
+                        "branch": "master",
+                        "git_sha": "6d46786420b4d7bc88eba026eb389c0c5535d120",
+                        "installed_by": ["modules"]
+                    },
+                    "gunzip": {
+                        "branch": "master",
+                        "git_sha": "0902eac3012baaf4f9ab6513c8c55acc9353c96c",
+                        "installed_by": ["modules"]
+                    },
+                    "islandpath": {
+                        "branch": "master",
+                        "git_sha": "da1f59ba243f60bf5364577c773cbf99654e83e4",
+                        "installed_by": ["modules"]
+                    },
+                    "phispy": {
+                        "branch": "master",
+                        "git_sha": "3c163b2f38b46457927aebd262409c4d5eebd1b8",
+                        "installed_by": ["modules"]
+                    }
                 }
             },
             "subworkflows": {
                 "nf-core": {
                     "utils_nextflow_pipeline": {
                         "branch": "master",
-                        "git_sha": "c2b22d85f30a706a3073387f30380704fcae013b",
+                        "git_sha": "1a545fcbd762911c21a64ced3dbef99b2b51ac75",
                         "installed_by": ["subworkflows"]
                     },
                     "utils_nfcore_pipeline": {

@@ -1,0 +1,3 @@
+#FILE	NUM_FOUND	vfA	vfB	vfC	vfD	vfE
+mini_a.txt	5	100.00	100.00	100.00	100.00	100.00
+mini_b.txt	5	100.00	100.00	100.00	100.00	100.00

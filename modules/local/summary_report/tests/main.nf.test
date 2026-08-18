@@ -1,0 +1,95 @@
+nextflow_process {
+
+    name "Test process: SUMMARY_REPORT"
+    script "../main.nf"
+    process "SUMMARY_REPORT"
+
+    tag "modules"
+    tag "modules_local"
+    tag "summary_report"
+
+    // `mini_a` has both prophages and islands, `mini_b` has neither, so the report has
+    // to cope with genomes whose virulence factors are all in the core genome.
+    setup {
+        run("INTEGRATE_ELEMENTS") {
+            script "../../integrate_elements/main.nf"
+            process {
+                """
+                input[0] = Channel.of(
+                    [
+                        [ id:'mini_a' ],
+                        file("\${projectDir}/tests/fixtures/mini.abricate.txt", checkIfExists: true),
+                        file("\${projectDir}/tests/fixtures/mini.phispy_coordinates.tsv", checkIfExists: true),
+                        file("\${projectDir}/tests/fixtures/mini.islandpath.gff", checkIfExists: true),
+                        file("\${projectDir}/tests/fixtures/mini.contig_map.tsv", checkIfExists: true)
+                    ],
+                    [
+                        [ id:'mini_b' ],
+                        file("\${projectDir}/tests/fixtures/mini.abricate.txt", checkIfExists: true),
+                        [],
+                        [],
+                        file("\${projectDir}/tests/fixtures/mini.contig_map.tsv", checkIfExists: true)
+                    ]
+                )
+                """
+            }
+        }
+    }
+
+    test("two genomes with an abricate summary") {
+
+        when {
+            process {
+                """
+                input[0] = INTEGRATE_ELEMENTS.out.stats.map { _meta, stats -> stats }.collect()
+                input[1] = INTEGRATE_ELEMENTS.out.annotation.map { _meta, annotation -> annotation }.collect()
+                input[2] = INTEGRATE_ELEMENTS.out.regions.map { _meta, regions -> regions }.collect()
+                input[3] = file("\${projectDir}/tests/fixtures/mini.abricate_summary.txt", checkIfExists: true)
+                """
+            }
+        }
+
+        then {
+            def report = path(process.out.report[0]).text
+            def localisation = path(process.out.tables[0].find { it.endsWith('_vf_localisation_matrix.tsv') }).readLines()
+
+            assertAll(
+                { assert process.success },
+                // The HTML embeds the run date and the Plotly bundle, so only the tables are
+                // snapshotted and the report itself is checked for its expected sections
+                { assert snapshot(process.out.tables).match() },
+                { assert report.contains('Virulence factors and mobile genetic elements') },
+                { assert report.contains('Co-localisation') },
+                { assert report.contains('Plotly.newPlot') },
+                { assert report.contains('mini_a') && report.contains('mini_b') },
+                // Genes are rows, genomes are columns, and a gene carried by an element in one
+                // genome but not the other must show both contexts
+                { assert localisation[0].split('\t').tail() == ['mini_a', 'mini_b'] },
+                { assert localisation.find { it.startsWith('vfC\t') } == 'vfC\tPAI+Prophage\tCore genome' }
+            )
+        }
+    }
+
+    test("stub") {
+
+        options "-stub"
+
+        when {
+            process {
+                """
+                input[0] = INTEGRATE_ELEMENTS.out.stats.map { _meta, stats -> stats }.collect()
+                input[1] = INTEGRATE_ELEMENTS.out.annotation.map { _meta, annotation -> annotation }.collect()
+                input[2] = INTEGRATE_ELEMENTS.out.regions.map { _meta, regions -> regions }.collect()
+                input[3] = []
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(process.out).match() }
+            )
+        }
+    }
+}

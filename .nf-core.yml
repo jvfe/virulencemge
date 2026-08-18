@@ -5,6 +5,8 @@ nf_core_version: 4.1.0
 lint:
   files_unchanged:
     - assets/sendmail_template.txt
+    # `.nf-test*` is added so that nf-test working directories and logs are not committed
+    - .gitignore
   multiqc_config: false
   files_exist:
     - conf/igenomes.config

@@ -1,0 +1,3 @@
+contig_id	locus_id	accession_id	length	n_cds	n_features
+contig_1	contig_1_truncated_locus	CONTIG1ACC.1	60000	4	9
+contig_2	contig_2_truncated_locus	CONTIG2ACC.1	20000	2	5

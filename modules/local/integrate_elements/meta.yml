@@ -1,0 +1,150 @@
+name: integrate_elements
+description: Cross-reference virulence factor coordinates with predicted prophages and
+  genomic islands for one genome
+keywords:
+  - virulence
+  - prophage
+  - genomic island
+  - mobile genetic element
+tools:
+  - pandas:
+      description: Fast, powerful, flexible and easy to use data analysis and manipulation
+        tool for Python
+      homepage: https://pandas.pydata.org
+      documentation: https://pandas.pydata.org/docs
+      tool_dev_url: https://github.com/pandas-dev/pandas
+      doi: "10.5281/zenodo.3509134"
+      licence: ["BSD-3-clause"]
+      identifier: ""
+input:
+  - - meta:
+        type: map
+        description: |
+          Groovy Map containing sample information
+          e.g. [ id:'test' ]
+    - abricate:
+        type: file
+        description: Optional tabular ABricate report of virulence factor hits
+        pattern: "*.txt"
+        ontologies:
+          - edam: "http://edamontology.org/format_3475" # TSV
+    - phispy:
+        type: file
+        description: Optional PhiSpy prophage coordinate table
+        pattern: "*.tsv"
+        ontologies:
+          - edam: "http://edamontology.org/format_3475" # TSV
+    - islandpath:
+        type: file
+        description: Optional IslandPath-DIMOB genomic island GFF3
+        pattern: "*.gff"
+        ontologies:
+          - edam: "http://edamontology.org/format_1975" # GFF3
+    - contig_map:
+        type: file
+        description: Contig identifier map from PREPARE_GENBANK, used to reconcile the
+          differing contig naming conventions of the three tools
+        pattern: "*.contig_map.tsv"
+        ontologies:
+          - edam: "http://edamontology.org/format_3475" # TSV
+output:
+  annotation:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. [ id:'test' ]
+      - "${prefix}.virulence_annotation.tsv":
+          type: file
+          description: One row per virulence factor hit with its genomic context (PAI,
+            Prophage, PAI+Prophage or Core genome) and the underlying overlaps
+          pattern: "*.virulence_annotation.tsv"
+          ontologies:
+            - edam: "http://edamontology.org/format_3475" # TSV
+  regions:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. [ id:'test' ]
+      - "${prefix}.mge_regions.tsv":
+          type: file
+          description: One row per predicted element with the virulence genes it carries
+            and its overlap with elements of the other type
+          pattern: "*.mge_regions.tsv"
+          ontologies:
+            - edam: "http://edamontology.org/format_3475" # TSV
+  stats:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. [ id:'test' ]
+      - "${prefix}.stats.tsv":
+          type: file
+          description: Single-row count summary for the genome
+          pattern: "*.stats.tsv"
+          ontologies:
+            - edam: "http://edamontology.org/format_3475" # TSV
+  regions_bed:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. [ id:'test' ]
+      - "${prefix}.mge_regions.bed":
+          type: file
+          description: Prophage and genomic island track for genome browsers
+          pattern: "*.mge_regions.bed"
+          ontologies:
+            - edam: "http://edamontology.org/format_3003" # BED
+  regions_gff:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. [ id:'test' ]
+      - "${prefix}.mge_regions.gff3":
+          type: file
+          description: Prophage and genomic island track in GFF3
+          pattern: "*.mge_regions.gff3"
+          ontologies:
+            - edam: "http://edamontology.org/format_1975" # GFF3
+  virulence_bed:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. [ id:'test' ]
+      - "${prefix}.virulence_factors.bed":
+          type: file
+          description: Virulence factor track for genome browsers, each feature named
+            gene|context
+          pattern: "*.virulence_factors.bed"
+          ontologies:
+            - edam: "http://edamontology.org/format_3003" # BED
+  versions_pandas:
+    - - ${task.process}:
+          type: string
+          description: The process the versions were collected from
+      - pandas:
+          type: string
+          description: The tool name
+      - 'python -c "import pandas; print(pandas.__version__)"':
+          type: eval
+          description: The expression to obtain the version of the tool
+topics:
+  versions:
+    - - ${task.process}:
+          type: string
+          description: The process the versions were collected from
+      - pandas:
+          type: string
+          description: The tool name
+      - 'python -c "import pandas; print(pandas.__version__)"':
+          type: eval
+          description: The expression to obtain the version of the tool
+authors:
+  - "@jvfe"
+maintainers:
+  - "@jvfe"

@@ -1,0 +1,34 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/nf-core/modules/master/subworkflows/yaml-schema.json
+name: "virulence_screening"
+description: Screen assemblies for virulence factors and aggregate them into one matrix
+keywords:
+  - virulence
+  - vfdb
+  - abricate
+  - bacteria
+components:
+  - abricate/run
+  - abricate/summary
+input:
+  - ch_fasta:
+      description: |
+        Nucleotide assembly to screen.
+        Structure: [ val(meta), path(fasta) ]
+  - ch_databases:
+      description: |
+        Directory holding a custom set of ABricate databases, or an empty list to use
+        the databases bundled with the container.
+        Structure: path(databases)
+output:
+  - report:
+      description: |
+        Per-genome tabular ABricate report.
+        Structure: [ val(meta), path(txt) ]
+  - summary:
+      description: |
+        Presence/absence matrix across all genomes, from `abricate --summary`.
+        Structure: [ val(meta), path(txt) ]
+authors:
+  - "@jvfe"
+maintainers:
+  - "@jvfe"
